@@ -1,0 +1,8 @@
+1599398601356 Connected COM3
+1599398605222 Repl Initialized
+>> Board ready.
+
+1599400892536 Connected COM3
+1599400896401 Repl Initialized
+>> Board ready.
+Strip ready.

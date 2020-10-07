@@ -1,0 +1,133 @@
+<h1>What This Project Is</h1>
+<p>This post is designed as both an example and a tutorial for setting up a RGB LED Strip that connects to Twitch Using <a href="https://nodejs.org/en/">Node.js</a>, <a href="https://github.com/tmijs/tmi.js">TMI.js</a> and <a href="http://johnny-five.io/">Johnny Five</a>.
+It will go through the steps for installing everything you need from scratch, from getting Node.JS installed through to how to connect to Twitch and create custom animations.</p>
+<h1>Things to Note</h1>
+<p>This system works slightly differently to standard Arduino projects. Rather than the code running on the Arduino directly the bulk of it runs on a PC that is connected to the Arduino via USB. This allows for much more processing power, storage, connectivity and ease of development. Some downsides mean the Arduino and computer need to be plugged in while the lights are active so it isn't very mobile. However for a streaming environment this shouldn't be too bad as the streaming computer makes for a good platform and they can be connected by a long cable if necessary. This also allows for faster program switching. Because the code is running on the computer, you only ever need to upload a sketch to the Arduino once (More on that later). This means you can use the same Arduino and setup for multiple different projects.</p>
+<h1>Getting Started</h1>
+<p>First things first. Some tools you will need / are recommended to have.</p>
+<strong>Required:</strong>
+<ul>
+  <li>Arduino IDE</li>
+  <li>An Arduino compatable board</li>
+  <li>An RGB LED Strip</li>
+  <li>A computer that will run the code during the stream. (Usually best to run on the streaming computer but can work on the main PC)</li>
+</ul>
+<strong>Recommended:</strong>
+<ul>
+  <li>A code editor that supports JavaScript (most of them). Some good free ones are <a href="https://code.visualstudio.com/">Visual Studio Code</a> and <a href="https://atom.io/">Atom</a>. Others can work as well but these ones are popular and have great support. You can use a regular text editor if you want but it will make editing code much more difficult.</li>
+</ul>
+<h1>Setting Up the Environment</h1>
+<p>This section will walk through installing Node.JS through NVM as well as setting up a project and installing the required libraries.</p>
+<p>To start we will install nvm. This is a tool that allows us to install multiple versions of Node.JS and makes installing specific versions easier. If you already have either Node.JS or nvm you can skip this part.</p>
+<h2>Installing NVM</h2>
+<p>What steps you follow depends on what operating system your computer is running.</p>
+<h3>Linux / Mac</h3>
+<p>If you are on Linux or Mac you can use either of the following commands. It will install NVM under the user's home directory.</p>
+<code-snippet src="<% project.base_url %>/assets/introduction-sh-scripts.txt" lang="sh" lines="1-3"></code-snippet>
+<p>If you want to customize the install directory then I recommend reading through the NVM installation instructions <a href="https://github.com/nvm-sh/nvm#installing-and-updating">here</a>. That provides both customization and troubleshooting steps.</p>
+<h3>Windows</h3>
+<p>For windows there is a dedicated installer you can find <a href="https://github.com/coreybutler/nvm-windows/releases">here</a>. Make sure to download the latest release and select the appropriate download. Usually this is labeled <code>nvm-setup.zip</code> or similar. Download, unzip and run the installer.</p>
+<h3>Verifying the Installation</h3>
+<p>After the installation of NVM is complete make sure to restart any terminals / command prompts to make sure any changes have taken affect.</p>
+<p>You can double check your installation by running:</p>
+<code-snippet src="<% project.base_url %>/assets/introduction-sh-scripts.txt" lang="sh" lines="5"></code-snippet>
+<p>If you don't get an error then your installation was successful. If for some reason you do get an error, follow the relevant troubleshooting steps for your platform (located on their download pages under their README)</p>
+<h2>Installing Node.JS</h2>
+<p>Now that NVM is installed we can install Node. To do so just run</p>
+<code-snippet src="<% project.base_url %>/assets/introduction-sh-scripts.txt" lang="sh" lines="7"></code-snippet>
+<p>in a terminal/command prompt. This will install the latest version of Node onto your system. Once that has finished you can run</p>
+<code-snippet src="<% project.base_url %>/assets/introduction-sh-scripts.txt" lang="sh" lines="9"></code-snippet>
+<p>Use the version you downloaded. You can find this in the output of the nvm install command. It will look something like 14.9.0 e.g.<code>nvm use 14.9.0</code></p>
+<p>After that you can verfiy the installation by running</p>
+<code-snippet src="<% project.base_url %>/assets/introduction-sh-scripts.txt" lang="sh" lines="11-13"></code-snippet>
+<p>If you get a version number as output then the installation has worked. If something doesn't work restart your terminal / command prompt and try again. If that still doesn't work follow the troubleshooting steps on the relevant nvm pages for your operating system. (Found above).</p>
+<h1>Setting Up the Project</h1>
+<p>To get started we will need a project space to write our code in and install our libraries to. To do this find a folder that you want to create a project in. Create a new folder and name it <code>twitch-rgb-lights</code>. This will be our project folder and all of our code will go in this folder. Open this folder and open a terminal / command prompt here or change your directory in an existing one with<code>cd /path/to/project/folder</code>.</p>
+<p>Once this is done run</p>
+<code-snippet src="<% project.base_url %>/assets/introduction-sh-scripts.txt" lang="sh" lines="15"></code-snippet>
+<p>This will initialize the folder as a Node project and use the default options. If you want to customize then you can run it without the <code>-y</code>. It will ask you questions about your project.</p>
+<p>The project is now set up and we are ready to install libraries.</p>
+<h1>Installing Libraries</h1>
+<p>This project will require a few libraries.</p>
+<ul>
+  <li><a href="https://github.com/tmijs/tmi.js">TMI.js</a>. This is what allows us to connect to Twitch.</li>
+  <li><a href="http://johnny-five.io/">Johnny Five</a>. This allows us to control the Arduino.</li>
+  <li><a href="https://github.com/ajfisher/node-pixel">Node Pixel</a>. This is what allows us to control the LED strips.</li>
+</ul>
+<p>To install these libraries just run</p>
+<code-snippet src="<% project.base_url %>/assets/introduction-sh-scripts.txt" lang="sh" lines="17"></code-snippet>
+<p>This will install the needed libraries for our project. It may take a while (around 5-mins).</p>
+<p>Once that is complete there is one final step. Setting up the Arduino. We will use a tool to get the required version of Firmata for the LED strips. To get this tool run the following command:</p>
+<code-snippet src="<% project.base_url %>/assets/introduction-sh-scripts.txt" lang="sh" lines="19"></code-snippet>
+<p>This will add a command to the terminal / command prompt to allow us to flash custom firmware to the Arduino.</p>
+<p>To install the firmware run</p>
+<code-snippet src="<% project.base_url %>/assets/introduction-sh-scripts.txt" lang="sh" lines="21"></code-snippet>
+<p>Make sure to change <code>uno</code> to the right name of your board A list can be found <a href="https://github.com/noopkat/avrgirl-arduino#how-do-i-use-it">here</a> (Scroll down a bit to the table) If your board is not listed then you will have to manually install the custom firmata version (See below). That should install the necessary firmware on the Arduino. If you get any issues try restarting the terminal / command prompt and retry. If that still doesn't work try specifying a port with <code>-p &lt;your board's port&gt;</code>. You can get the port of the board you are using from the Arduino IDE under Tools &gt; Port and find the one with your board listed next to it. For example if you board is connected to port COM3 then you can run</p>
+<code-snippet src="<% project.base_url %>/assets/introduction-sh-scripts.txt" lang="sh" lines="23"></code-snippet>
+<p>If you are still having issues refer to the node-pixel repository for troubleshooting steps.</p>
+<h3>Installing Firmata on Other Boards</h3>
+<p>If your board isn't supported by interchange then you can install firmata yourself. There are just a few extra steps.</p>
+<p>First you will need to download a zipped copy of the <a href="https://github.com/ajfisher/node-pixel">node-pixel</a> repository. This can be done by clicking the green "Code" button and selecting "Download ZIP". Once that has downloaded, create a new folder somewhere called <code>node_pixel_firmata</code>. That name has to be exact otherwise the Arduino IDE will complain. Open the downloaded ZIP file and navigate to <code>node-pixel-master&gt;firmware&gt;build&gt;node_pixel_firmata</code> and copy the contents into the new foder we made.</p>
+<p>Once that is done open the file named <code>node_pixel_firmata</code>. The Arduino IDE should appear with a bunch of tabs at the top. Once that has finished loading, plug in your board with it's cable. Now you'll need the necesary loaders for your board, these are different for each board so you will have to see your board's manufacturer's instructions on uploading sketches. Once you have those loaders installed click upload on the node_pixel_firmata tab. This should install the firmata verison onto the board. Once it's finished you can close the Arduino IDE. Unfortunately, because this method is non-standard you will be on you own with any errors or problems you encounter. If you can, have a look at the error message and try to remedy any issues you can. Otherwise you may be able to Google specific instructions for your board.</p>
+<h1>Writing the Code</h1>
+<p>To start writing code I recommend using a proper editor as mentioned at the beginning. Open your preferred editor and open our project folder.</p>
+<p>In this folder create a new file named <code>index.js</code> and open it. In that file write the following.</p>
+<code-snippet src="<% project.base_url %>/assets/introduction-js-scripts.js" lang="js" lines="1-3"></code-snippet>
+<p>This will bring in the needed libraries and give us access to their functions.</p>
+<h2>Connecting to the Arduino</h2>
+<p>Under that add this</p>
+<code-snippet src="<% project.base_url %>/assets/introduction-js-scripts.js" lang="js" lines="5-10"></code-snippet>
+<p>Replace the port with your boards port from the Arduino IDE.</p>
+<p>This lets us wait for the board to be ready to talk before we try to send commands. Most of our code will go inside here.</p>
+<p>We can now run our first test.</p>
+<p>In the terminal / command prompt run</p>
+<code-snippet src="<% project.base_url %>/assets/introduction-sh-scripts.txt" lang="sh" lines="25"></code-snippet>
+<p>You should see some output similar to this after a couple of seconds.</p>
+<code-snippet src="<% project.base_url %>/assets/introduction-output-scripts.txt" lang="plaintext" lines="1-3"></code-snippet>
+<p>If you don't see this output or get an error double check the syntax and spelling. Try to look at the error message. Make sure the board is plugged in and that you have the correct port.</p>
+<p>Press <kbd>Ctrl + C</kbd> on Windows and linux or <kbd>&#8984; + C</kbd> on Mac to end the test. Press it again to close the program.</p>
+<h2>Controlling the LED Strip</h2>
+<p>Go back to the editor and just after our require commands add these few lines:</p>
+<code-snippet src="<% project.base_url %>/assets/introduction-js-scripts.js" lang="js" lines="12-17"></code-snippet>
+<p>and inside the board's <code>ready</code> listener add this</p>
+<code-snippet src="<% project.base_url %>/assets/introduction-js-scripts.js" lang="js" lines="19-33"></code-snippet>
+<p>This will wait for the LED strip to be ready before we try to change any colours. Any animations and such will have to happen in here.</p>
+<p>In the terminal run <code>node index.js</code> again and wait for output. You should see something like this:</p>
+<code-snippet src="<% project.base_url %>/assets/introduction-output-scripts.txt" lang="plaintext" lines="5-8"></code-snippet>
+<p>If you have any issues make sure the pins and lengths you have set are correct and that the connections between your Arduino and LED Strip are ok. Follow any error messages you receive and again follow any troubleshooting steps provided on the node-pixel library.</p>
+<p>Our next step is to get a simple blinking led.</p>
+<p>After we configure the strip add this line</p>
+<code-snippet src="<% project.base_url %>/assets/introduction-js-scripts.js" lang="js" lines="35"></code-snippet>
+<p>and inside the strip's ready listener add this:</p>
+<code-snippet src="<% project.base_url %>/assets/introduction-js-scripts.js" lang="js" lines="37-48"></code-snippet>
+<p>This will make the strip flash blue every second. You can change the <code>1000</code> to specify the number of milliseconds between each change.</p>
+<p>When you run the code you should get the strip to flash.</p>
+<p>As always if you receive any errors follow any instructions they give and double check syntax.</p>
+<p>Stop that test and we can move on.</p>
+<h2>Connecting to Twitch</h2>
+<p>Inside the strip's <code>ready</code> listener replace our blink example with this code.</p>
+<code-snippet src="<% project.base_url %>/assets/introduction-js-scripts.js" lang="js" lines="50-63"></code-snippet>
+<p>This will make the strip flash blue when a chat message is sent.</p>
+<p>The way this works is fairly simple.</p>
+<p>The first step is to configure what channels we want to listen to for events. That is done with the <code>new tmi.client()</code> lines. The list under channels are the channel names of the channels you want to listen to.</p>
+<p>After that is set up we specify what events we want to listen for. This is done with the <code>client.on("eventname", ()=>{})</code> part. The event name is one of the available events you can listen to. These include:</p>
+<ul>
+  <li><code>message</code> When a chat message / action or whisper is received.</li>
+  <li><code>cheer</code> When a cheer is made.</li>
+  <li><code>hosted</code> When another user hosts the channel</li>
+  <li><code>raided</code> When the channel gets raided</li>
+  <li><code>resub</code> When someone resubs.</li>
+  <li><code>submysterygift</code> When someone gifts subs to people</li>
+  <li><code>subscription</code> When someone subscribes to the channel</li>
+</ul>
+<p>The full list can be found <a href="https://github.com/tmijs/docs/blob/gh-pages/_posts/v1.4.2/2019-03-03-Events.md">here</a>.</p>
+<p>So to listen for subscriptions you would write</p>
+<code-snippet src="<% project.base_url %>/assets/introduction-js-scripts.js" lang="js" lines="65-67"></code-snippet>
+<p>The list of parameters (channel, username, methods, message, etc.) can be got from <a href="https://github.com/tmijs/docs/blob/gh-pages/_posts/v1.4.2/2019-03-03-Events.md#subgift">this page</a> in the TMI.js docs.</p>
+<p>Below is an example of how to react to the most common events as well as how to get various information about the event from the parameters. e.g. the month streak for a subscription or the number of bits cheered.</p>
+<code-snippet src="<% project.base_url %>/assets/introduction-js-scripts.js" lang="js" lines="69-117"></code-snippet>
+<p>This does some basic flashes of a single color. For fading between colors and animations I have another guide that can explain the process of color animations. You can find that <a href="./colors.md">here</a></p>
+<h1>Closing Notes</h1>
+<p>I have linked a github repository that contains the final product from this tutorial. It differs slightly as there are more steps to making this easier to use and more expandable. I have also changed the way scripts are imported. This is covered in the next part of the tutorial, and this allows for this project to be used in a web browser to experiment with animations, as you will see in the next part.</p>
+<p>I plan to make a tool for creating animations but for now it will just have to be done in code</p>
+<p>If you wish to experiment with these tools I recommend following the rest of the tutorial so you know how the animations are set up and what extra features are provided. The instructions for accessing these tools is on the last page of the tutorial.</p>

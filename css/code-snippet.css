@@ -1,0 +1,28 @@
+pre {
+  border-radius: .3rem;
+  padding: 1rem !important;
+  scrollbar-width: thin;
+  scrollbar-color: var(--background-color-light) #0000;
+}
+
+pre::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+
+pre::-webkit-scrollbar-track {
+  background: none;
+}
+
+pre::-webkit-scrollbar-thumb {
+  background-color: var(--background-color-light);
+  border-radius: 5px;
+  border: 6px solid #282c34;
+  transform: scale(.9, .9);
+}
+
+@media (prefers-color-scheme: dark) {
+  pre::-webkit-scrollbar-thumb {
+    border: 3px solid #282c34;
+  }
+}

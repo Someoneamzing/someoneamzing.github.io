@@ -1,0 +1,44 @@
+html {
+  --text-color: black;
+  --background-color: white;
+  --background-color-light: lightgrey;
+  --background-color-highlight: #52d7ff;
+  --body-width: 100%;
+  --link-color: grey;
+  --background-color-error: #c93232;
+}
+
+@media screen and (prefers-color-scheme: dark) {
+  html {
+    --text-color: #cccccc;
+    --background-color: #1a1a1a;
+    --background-color-light: #333333;
+    --background-color-highlight: #0099c7;
+    --link-color: white;
+    --background-color-error: #610000;
+  }
+}
+
+@media screen and (min-width: 400px) {
+  html {
+    --body-width: 380px;
+  }
+}
+
+@media screen and (min-width: 600px) {
+  html {
+    --body-width: 580px;
+  }
+}
+
+@media screen and (min-width: 800px) {
+  html {
+    --body-width: 780px;
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  html {
+    --body-width: 980px;
+  }
+}

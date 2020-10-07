@@ -1,0 +1,25 @@
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+# or
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+
+nvm --version
+
+nvm install latest
+
+nvm use <the version you downloaded>
+
+node --version
+#and
+npm --version
+
+npm init -y
+
+npm install tmi.js johnny-five node-pixel
+
+npm install -g nodebots-interchange
+
+interchange install git+https://github.com/ajfisher/node-pixel -a uno --firmata
+
+interchange install git+https://github.com/ajfisher/node-pixel -a uno -p COM3 --firmata
+
+node index.js

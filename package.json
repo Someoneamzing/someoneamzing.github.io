@@ -1,0 +1,25 @@
+{
+  "name": "someoneamzing.github.io",
+  "version": "1.0.0",
+  "description": "Personal Portfolio for Someoneamzing",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Someoneamzing/someoneamzing.github.io.git"
+  },
+  "author": "Jacob McEwan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Someoneamzing/someoneamzing.github.io/issues"
+  },
+  "homepage": "https://github.com/Someoneamzing/someoneamzing.github.io#readme",
+  "dependencies": {
+    "marked": "^1.1.1",
+    "node-fetch": "^2.6.1",
+    "slugger-unique": "^1.0.1",
+    "uuid": "^8.3.0"
+  }
+}

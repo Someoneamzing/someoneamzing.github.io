@@ -1,0 +1,53 @@
+<h1 id="animating-rgb-colors">Animating RGB Colors</h1>
+<p>Animating color involves a process called interpolation. There are a couple of different forms. Which one you go with is personal opinion, I&#39;ll provide a list of the different types as well as what they look like so you can choose.</p>
+<p>The type of system we are going to construct will work similar to layers in photoshop. We can have multiple animations playing at once but the top ones will take priority. So if we have a simple &quot;breathing&quot; animation between two colors that loops constantly then we play a short animation to indicate a twitch event like a flash of orange then the orange will show up and then return to the background animation. This also means we can fade between animations. So if an animation is halfway through fading in then some of the color of that pixel will be from the background animation and the rest from the top animation.</p>
+<p>To make most of this easier we will use a library called <code>chroma.js</code>. It provides easy color mixing functions that we can use.</p>
+<p>To install it run the following inside the project.</p>
+<code-snippet src="<% project.base_url %>/assets/color-mixing-sh-scripts.txt" lang="sh" lines="1"></code-snippet>
+<p>Once that is done go to the top of the <code>index.js</code> file and add the line</p>
+<code-snippet src="<% project.base_url %>/assets/color-mixing-js-scripts.txt" lang="js" lines="1"></code-snippet>
+<p>Now we can use the chroma library. To make things easier we are going to write a system to animate the lights from one color to another.</p>
+<p>Chroma provides a simple gradient system. You can specify color stops and move them around. We will use this as our fades. It works like so:</p>
+<code-snippet src="<% project.base_url %>/assets/color-mixing-js-scripts.txt" lang="js" lines="3"></code-snippet>
+<p>Fade is then a gradient that fades from red through green to blue in 1 second. The list of numbers is the time in ms that the color should be completely faded to.</p>
+<p>We can get the color of the LEDs at any point in time by doing this:</p>
+<code-snippet src="<% project.base_url %>/assets/color-mixing-js-scripts.txt" lang="js" lines="5"></code-snippet>
+<p>color is then the color of the fade at <code>time</code> milliseconds into the animation.</p>
+<p>To make a color stay static you can specify the same color twice and give two different times for the start and finish. Like so:</p>
+<code-snippet src="<% project.base_url %>/assets/color-mixing-js-scripts.txt" lang="js" lines="7"></code-snippet>
+<p>Now fade will go from red to green over 500ms. Then hold green for 500ms, then finally fade to blue over 500ms.</p>
+<p>The only part left to do now is to implement the fade in and fade out. However, because we are fading from another animation we need to do these slightly differently because we can&#39;t easily change colors in a chroma gradient. So we will implement it like so:</p>
+<code-snippet src="<% project.base_url %>/assets/color-mixing-js-scripts.txt" lang="js" lines="9"></code-snippet>
+<p>Here the backColor is the color of the strip from the animation below this one.</p>
+<p>This system will be based on the idea of predefined animations and a system that keeps track of which ones are playing. To model this we will make 2 new classes (types if you will). The first will be an Animation class. This will represent the pattern the lights will follow and will keep track of timing, colors, looping etc. The other class will be the AnimationManager. It will keep track of all the currently playing animations and manage blending between animations as well as updating the LED strip each frame.</p>
+<p>To get started create a new file called <code>Animation.mjs</code> in the same folder as <code>index.js</code>. Inside that we will add this bit of starter code.</p>
+<code-snippet src="<% project.base_url %>/assets/color-mixing-js-scripts.txt" lang="js" lines="11-16"></code-snippet>
+<p>What this does is bring in the chroma library to use in this file and create a new class called Animation. The export default line tells JavaScript that we want to use this class from other files. This is why we use the <code>.mjs</code> extension rather then <code>.js</code>. Additionally you should rename <code>index.js</code> to <code>index.mjs</code> and change the library imports from earlier to the new import syntax. So the top of our <code>index.mjs</code> file should look like this:</p>
+<code-snippet src="<% project.base_url %>/assets/color-mixing-js-scripts.txt" lang="js" lines="17-21"></code-snippet>
+<p>Now under that we add the following line:</p>
+<code-snippet src="<% project.base_url %>/assets/color-mixing-js-scripts.txt" lang="js" lines="22"></code-snippet>
+<p>This is what the <code>export default</code> line from earlier enables. We can now use the <code>Animation</code> class we created in <code>Animation.mjs</code> inside <code>index.mjs</code>. This allows use to keep file sizes small and makes managing our code easier.</p>
+<p>Now what we are going to add next is quite large but there are comments to explain each part so bare with it. In <code>Animation.mjs</code> inside the <code>Animation</code> class add these lines:</p>
+<code-snippet src="<% project.base_url %>/assets/color-mixing-js-scripts.txt" lang="js" lines="24-134"></code-snippet>
+<p>Now that that is added we can specify animations like below:</p>
+<code-snippet src="<% project.base_url %>/assets/color-mixing-js-scripts.txt" lang="js" lines="135-153"></code-snippet>
+<p>Now that is the definition part of the Animations done but we still don&#39;t have a way of getting colors at specific times. So to do that we are going to add two functions to the Animation class. So inside <code>Animation.mjs</code> below our last bit of code but still inside the Animation class add this code:</p>
+<code-snippet src="<% project.base_url %>/assets/color-mixing-js-scripts.txt" lang="js" lines="154-194"></code-snippet>
+<p>This allows us to retieve the color of LEDs at specific times during the animation. As an example:</p>
+<code-snippet src="<% project.base_url %>/assets/color-mixing-js-scripts.txt" lang="js" lines="195-202"></code-snippet>
+<p>Now to add the AnimationManager class. In the same folder as <code>index.mjs</code> and <code>Animation.mjs</code> add a new file named <code>AnimationManager.mjs</code>. Inside it add this code:</p>
+<code-snippet src="<% project.base_url %>/assets/color-mixing-js-scripts.txt" lang="js" lines="203-209"></code-snippet>
+<p>Our first addition will go inside the AnimationManager class. It will set up the configuration options for the manager.</p>
+<code-snippet src="<% project.base_url %>/assets/color-mixing-js-scripts.txt" lang="js" lines="210-224"></code-snippet>
+<p>After that we will add 4 functions. One to play an animation, one to get the color of LEDs, one to set a background color and another to actually update the LED strip with the appropriate colors. So below the last code but still inside the AnimationManager class add this:</p>
+<code-snippet src="<% project.base_url %>/assets/color-mixing-js-scripts.txt" lang="js" lines="225-317"></code-snippet>
+<p>Now this may seem like a lot of code, but the payoff is worth it. You can very easily create new animations and react to new events without having to change much code at all. This can event be used in systems other than Twitch. It can be used to react to other real-time events or even be set to go off at specific times. And with some small modifications we can add much more complex animations. I cover that <a href="./complex_animations.md">here</a>.</p>
+<p>Once all that code is implemented we should be able to start animating the LEDs. Inside <code>index.mjs</code>, undeneath the TIM.js client configuration and before adding out event listeners, add this code.</p>
+<code-snippet src="<% project.base_url %>/assets/color-mixing-js-scripts.txt" lang="js" lines="318-321"></code-snippet>
+<p> And that&#39;s it. This will run our animations at 60 fps. This can be changed by changing the <code>1000/60</code> part to <code>1000/fps</code> where <code>fps</code> is the fps target you want. Remember there is a hardware limit on most strips and for this system it&#39;s around 60 fps, but that changes with more LEDs. We can now play animations in reaction to twitch events. A reccomended pattern to follow is to have a Map of your animations defined beforehand to give them names.</p>
+<p> So, for example, before the <code>board.loop()</code> line add this:</p>
+<code-snippet src="<% project.base_url %>/assets/color-mixing-js-scripts.txt" lang="js" lines="322-337"></code-snippet>
+<p> So now in the Twitch events section:</p>
+<code-snippet src="<% project.base_url %>/assets/color-mixing-js-scripts.txt" lang="js" lines="338-343"></code-snippet>
+<p>And now when a subscription comes in the strip will flash orange and fade to a reddish-orange before fading out.</p>
+<p>And that&#39;s it. Just add your animations into the map like shown above and call the <code>AnimationManager.play()</code> method whenever you want to play an animation.</p>

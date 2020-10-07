@@ -1,0 +1,20 @@
+{
+  "twitch-rgb": {
+    "name": "Twitch RGB LED Integration",
+    "description": "This project goes over setting up RGB LED Strips to react to Twitch events. We make use of Jhonny Five, TMI.js, Node.JS and Chroma.js. It covers how to set up these libraries as well as how to create custom animations and effects.",
+    "base_url": "/posts/twitch-rgb",
+    "pages": [
+      {"title": "Introduction", "path": "introduction.html", "description": "A small project to make an RGB LED strip that reacts to Twitch events."},
+      {"title": "Color Mixing and Animations", "description":"This part of the tutorial will cover how to mix and blend between colors and how to put that together into animations.","path":"color-mixing.html"},
+      {"title": "Advanced Animations", "description":"This part will expand on the last step, adding the ability to create more complex animations.","path":"advanced-animations.html"}
+    ]
+  },
+  "controller-emulator": {
+    "name": "Remote Player with Controller Emulation",
+    "description": "A project I built after friends had issues with using various remote play systems. Provides a smartphone based controller and screenshare using WebRTC.",
+    "base_url": "/posts/controller-emulator",
+    "pages": [
+      {"title": "The Remote Play Project as a Whole", "path": "index.html", "description": "A side project that I made that provides a remote play service that utilises your smartphone as a controller and provides peer-to-peer screen sharing."}
+    ]
+  }
+}
